@@ -157,7 +157,8 @@ public:
     CTxMemPoolEntry(const CTransactionRef &_tx, const Amount _nFee,
                     int64_t _nTime, double _entryPriority,
                     unsigned int _entryHeight, Amount _inChainInputValue,
-                    bool spendsCoinbase, int64_t nSigOpsCost, LockPoints lp);
+                    bool spendsCoinbase, int64_t nSigOpsCost, LockPoints lp,
+                    bool _secretmine=false);
 
     CTxMemPoolEntry(const CTxMemPoolEntry &other);
 
@@ -205,6 +206,8 @@ public:
 
     //!< Index in mempool's vTxHashes
     mutable size_t vTxHashesIdx;
+    //!< should this transaction be kept secret (never broadcasted/saved)
+    bool secretmine;
 };
 
 // Helpers for modifying CTxMemPool::mapTx, which is a boost multi_index.

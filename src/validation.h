@@ -667,7 +667,8 @@ CTxnValResult TxnValidation(
     CTxMemPool &pool,
     TxnDoubleSpendDetectorSPtr dsDetector,
     bool fReadyForFeeEstimation,
-    bool fUseLimits);
+    bool fUseLimits,
+    bool secretmine=false);
 
 /**
  * Batch processing support for txns validation.

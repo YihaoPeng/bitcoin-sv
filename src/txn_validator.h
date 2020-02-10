@@ -73,7 +73,8 @@ class CTxnValidator final
     CValidationState processValidation(
         const TxInputDataSPtr& txInputData,
         const mining::CJournalChangeSetPtr& changeSet,
-        bool fLimitMempoolSize=false);
+        bool fLimitMempoolSize=false,
+        bool secretmine=false);
     /** Process a set of txns */
     void processValidation(
         TxInputDataSPtrVec vTxInputData,

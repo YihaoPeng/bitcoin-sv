@@ -1133,9 +1133,9 @@ static UniValue signrawtransaction(const Config &config,
 static UniValue sendrawtransaction(const Config &config,
                                    const JSONRPCRequest &request) {
     if (request.fHelp || request.params.size() < 1 ||
-        request.params.size() > 3) {
+        request.params.size() > 4) {
         throw std::runtime_error(
-            "sendrawtransaction \"hexstring\" ( allowhighfees )\n"
+            "sendrawtransaction \"hexstring\" ( allowhighfees ( dontcheckfee ( secretmine ) ) )\n"
             "\nSubmits raw transaction (serialized, hex-encoded) to local node "
             "and network.\n"
             "\nAlso see createrawtransaction and signrawtransaction calls.\n"
@@ -1145,6 +1145,9 @@ static UniValue sendrawtransaction(const Config &config,
             "2. allowhighfees    (boolean, optional, default=false) Allow high "
             "fees\n"
             "3. dontcheckfee     (boolean, optional, default=false) Don't check fee\n"
+            "4. secretmine       (boolean, optional, default=false) Add a "
+            "transaction to the mempool without relaying it; also, bypass all "
+            "standardness rules for acceptance.\n"
             "\nResult:\n"
             "\"hex\"             (string) The transaction hash in hex\n"
             "\nExamples:\n"
@@ -1161,7 +1164,7 @@ static UniValue sendrawtransaction(const Config &config,
             HelpExampleRpc("sendrawtransaction", "\"signedhex\""));
     }
     RPCTypeCheck(request.params,
-                 {UniValue::VSTR, UniValue::VBOOL, UniValue::VBOOL});
+                 {UniValue::VSTR, UniValue::VBOOL, UniValue::VBOOL, UniValue::VBOOL});
     // parse hex string from parameter
     CMutableTransaction mtx;
     if (!DecodeHexTx(mtx, request.params[0].get_str())) {
@@ -1179,8 +1182,12 @@ static UniValue sendrawtransaction(const Config &config,
     if (request.params.size() > 2 && request.params[2].get_bool()) {
         dontCheckFee = true;
     }
+    bool secretmine = false;
+    if (request.params.size() > 3 && request.params[3].get_bool()) {
+        secretmine = true;
+    }
 
-    if (!g_connman) {
+    if (!secretmine && !g_connman) {
         throw JSONRPCError(
             RPC_CLIENT_P2P_DISABLED,
             "Error: Peer-to-peer functionality missing or disabled");
@@ -1210,7 +1217,8 @@ static UniValue sendrawtransaction(const Config &config,
                                                 false,         // fLimitFree
                                                 nMaxRawTxFee), // nAbsurdFee
                             changeSet, // an instance of the journal
-                            true) // fLimitMempoolSize
+                            true, // fLimitMempoolSize
+                            secretmine)
         };
         // Check if the transaction was accepted by the mempool.
         // Due to potential race-condition we have to explicitly call exists() instead of
@@ -1252,10 +1260,12 @@ static UniValue sendrawtransaction(const Config &config,
         txinfo = mempool.getNonFinalPool().getInfo(txid);
     }
 
-    // It is possible that we relay txn which was added and removed from the mempool, because:
-    // - block was mined
-    // - the Validator's asynch mode removed the txn (and triggered reject msg)
-    g_connman->EnqueueTransaction( {inv, txinfo} );
+    if (!secretmine) {
+        // It is possible that we relay txn which was added and removed from the mempool, because:
+        // - block was mined
+        // - the Validator's asynch mode removed the txn (and triggered reject msg)
+        g_connman->EnqueueTransaction( {inv, txinfo} );
+    }
 
     LogPrint(BCLog::TXNSRC, "got txn rpc: %s txnsrc user=%s\n",
         inv.hash.ToString(), request.authUser.c_str());
@@ -1271,7 +1281,7 @@ static const CRPCCommand commands[] = {
     { "rawtransactions",    "createrawtransaction",   createrawtransaction,   true,  {"inputs","outputs","locktime"} },
     { "rawtransactions",    "decoderawtransaction",   decoderawtransaction,   true,  {"hexstring"} },
     { "rawtransactions",    "decodescript",           decodescript,           true,  {"hexstring"} },
-    { "rawtransactions",    "sendrawtransaction",     sendrawtransaction,     false, {"hexstring","allowhighfees","dontcheckfee"} },
+    { "rawtransactions",    "sendrawtransaction",     sendrawtransaction,     false, {"hexstring","allowhighfees","dontcheckfee","secretmine"} },
     { "rawtransactions",    "signrawtransaction",     signrawtransaction,     false, {"hexstring","prevtxs","privkeys","sighashtype"} }, /* uses wallet if enabled */
 
     { "blockchain",         "gettxoutproof",          gettxoutproof,          true,  {"txids", "blockhash"} },

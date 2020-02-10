@@ -29,11 +29,11 @@ CTxMemPoolEntry::CTxMemPoolEntry(const CTransactionRef &_tx, const Amount _nFee,
                                  unsigned int _entryHeight,
                                  Amount _inChainInputValue,
                                  bool _spendsCoinbase, int64_t _sigOpsCount,
-                                 LockPoints lp)
+                                 LockPoints lp, bool _secretmine)
     : tx(_tx), nFee(_nFee), nTime(_nTime), entryPriority(_entryPriority),
       entryHeight(_entryHeight), inChainInputValue(_inChainInputValue),
       spendsCoinbase(_spendsCoinbase), sigOpCount(_sigOpsCount),
-      lockPoints(lp) {
+      lockPoints(lp), secretmine(_secretmine) {
     nTxSize = tx->GetTotalSize();
     nModSize = tx->CalculateModifiedSize(GetTxSize());
     nUsageSize = RecursiveDynamicUsage(tx);
@@ -1179,6 +1179,11 @@ std::vector<TxMempoolInfo> CTxMemPool::InfoAllNL() const {
     std::vector<TxMempoolInfo> ret;
     ret.reserve(mapTx.size());
     for (auto it : iters) {
+        if (it->secretmine) {
+            // This hides secret-mined transactions from mempool dumps: both
+            // network BIP35 requests, and the mempool-dumping on shutdown.
+            continue;
+        }
         ret.push_back(TxMempoolInfo{*it});
     }
     return ret;

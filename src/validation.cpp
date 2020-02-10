@@ -1113,7 +1113,8 @@ CTxnValResult TxnValidation(
     CTxMemPool& pool,
     TxnDoubleSpendDetectorSPtr dsDetector,
     bool fReadyForFeeEstimation,
-    bool fUseLimits) {
+    bool fUseLimits,
+    bool secretmine) {
 
     using Result = CTxnValResult;
 
@@ -1387,7 +1388,7 @@ CTxnValResult TxnValidation(
             inChainInputValue,
             fSpendsCoinbase,
             nSigOpsCount,
-            lp) };
+            lp, secretmine) };
     // Check tx's priority based on relaypriority flag and relay fee.
     CFeeRate minRelayTxFee = config.GetMinFeePerKB();
     if (!CheckTxRelayPriority(nModifiedFees, minRelayTxFee, *pMempoolEntry, nTxSize)) {

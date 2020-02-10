@@ -184,7 +184,8 @@ void CTxnValidator::resubmitTransaction(TxInputDataSPtr pTxInputData) {
 CValidationState CTxnValidator::processValidation(
     const TxInputDataSPtr& pTxInputData,
     const mining::CJournalChangeSetPtr& changeSet,
-    bool fLimitMempoolSize) {
+    bool fLimitMempoolSize,
+    bool secretmine) {
 
     const CTransactionRef& ptx = pTxInputData->mpTx;
     const CTransaction &tx = *ptx;
@@ -208,7 +209,8 @@ CValidationState CTxnValidator::processValidation(
                 mMempool,
                 mpTxnDoubleSpendDetector,
                 IsCurrentForFeeEstimation(),
-                false);
+                false,
+                secretmine);
     // Special handlers
     CTxnHandlers handlers {
         changeSet, // Mempool Journal ChangeSet
