@@ -17,7 +17,7 @@
 
 #include "chainparamsseeds.h"
 
-#define GENESIS_ACTIVATION_MAIN                 620538
+#define GENESIS_ACTIVATION_MAIN                 111
 #define GENESIS_ACTIVATION_STN                  14896
 #define GENESIS_ACTIVATION_TESTNET              1344302
 #define GENESIS_ACTIVATION_REGTEST              10000
@@ -92,15 +92,15 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 210000;
-        consensus.BIP34Height = 227931;
+        consensus.BIP34Height = 22;
         consensus.BIP34Hash = uint256S(
             "000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8");
         // 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
-        consensus.BIP65Height = 388381;
+        consensus.BIP65Height = 38;
         // 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
-        consensus.BIP66Height = 363725;
+        consensus.BIP66Height = 36;
         // 000000000000000004a1b34462cb8aeebd5799177f7a29cf28f2d1961716b5b5
-        consensus.CSVHeight = 419328;
+        consensus.CSVHeight = 41;
         consensus.powLimit = uint256S(
             "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         // two weeks
@@ -123,10 +123,10 @@ public:
             "000000000000000000e45ad2fbcc5ff3e85f0868dd8f00ad4e92dffabe28f8d2");
 
         // August 1, 2017 hard fork
-        consensus.uahfHeight = 478558;
+        consensus.uahfHeight = 47;
 
         // November 13, 2017 hard fork
-        consensus.daaHeight = 504031;
+        consensus.daaHeight = 5000;
 
         // February 2020, Genesis Upgrade
         consensus.genesisHeight = GENESIS_ACTIVATION_MAIN;
@@ -136,11 +136,11 @@ public:
          * normal data. The characters are rarely used upper ASCII, not valid as
          * UTF-8, and produce a large 32-bit integer with any alignment.
          */
-        diskMagic[0] = 0xf9;
+        diskMagic[0] = 0xfa;
         diskMagic[1] = 0xbe;
         diskMagic[2] = 0xb4;
         diskMagic[3] = 0xd9;
-        netMagic[0] = 0xe3;
+        netMagic[0] = 0xe4;
         netMagic[1] = 0xe1;
         netMagic[2] = 0xf3;
         netMagic[3] = 0xe8;
@@ -157,14 +157,14 @@ public:
                uint256S("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b"
                         "7afdeda33b"));
 
-        // Note that of those with the service bits flag, most only support a
+        /*// Note that of those with the service bits flag, most only support a
         // subset of possible options.
         // Bitcoin SV seeder
         vSeeds.push_back(CDNSSeedData("bitcoinsv.io", "seed.bitcoinsv.io", true));
         // cascharia.com
         vSeeds.push_back(CDNSSeedData("cascharia.com", "seed.cascharia.com", true));
         // satoshisvision.network
-        vSeeds.push_back(CDNSSeedData("satoshisvision.network", "seed.satoshisvision.network", true));
+        vSeeds.push_back(CDNSSeedData("satoshisvision.network", "seed.satoshisvision.network", true));*/
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 0);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 5);
@@ -180,7 +180,7 @@ public:
         fRequireStandard = true;
         fMineBlocksOnDemand = false;
 
-        checkpointData = { {
+        checkpointData = { {/*
                 {11111, uint256S("0000000069e244f73d78e8fd29ba2fd2ed618bd6fa2ee"
                                  "92559f542fdb26e7c1d")},
                 {33333, uint256S("000000002dd5588a74784eaa7ab0507a18ad16a236e7b"
@@ -216,7 +216,7 @@ public:
                 // Monolith activation.
                 {530359, uint256S("0000000000000000011ada8bd08f46074f44a8f15539"
                                   "6f43e38acf9501c49103")}
-            }};
+            */}};
 
         // Data as of block
         // 000000000000000001d2ce557406b017a928be25ee98906397d339c3f68eec5d
