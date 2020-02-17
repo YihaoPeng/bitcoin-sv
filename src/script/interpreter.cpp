@@ -2103,7 +2103,7 @@ std::optional<bool> VerifyScript(
         // softfork (and P2SH should be one).
         assert((flags & SCRIPT_VERIFY_P2SH) != 0);
         if (stack.size() != 1) {
-            return set_error(serror, SCRIPT_ERR_CLEANSTACK);
+            //return set_error(serror, SCRIPT_ERR_CLEANSTACK);
         }
     }
 
